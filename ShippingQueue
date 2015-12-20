@@ -1,0 +1,146 @@
+//FORBIDDEN java.util
+
+/**
+ * ShippingQueue. This class is a priority queue. 
+ */
+public class ShippingQueue
+{
+private Package[] packages;
+private int count;
+private final static int INITIAL_SIZE = 5;
+
+/**
+ * Constructor. Initialize the packages array.
+ * Set count to 0.
+ */
+public ShippingQueue()
+{
+packages = new Package[INITIAL_SIZE];
+count = 0;
+}
+
+public Package get(int i)
+{
+if( i < 0 || i >= count ) throw new ArrayIndexOutOfBoundsException();
+
+return packages[i];
+}
+
+public int size()
+{
+return count;
+}
+
+/**
+ * add. Add a Package to the array. If the array
+ * isn't large enough to hold another package, then
+ * resize the array. 
+ * @param p the package to add
+ */
+public void add(Package p)
+{
+if(count==packages.length)
+{
+resize();
+}
+if(packages[0]==null)
+{
+packages[0]=p;
+count++;
+}
+else
+{
+packages[count]=p;
+count++;
+sort();
+}
+}
+
+/**
+ * resize. Resize the underlying array. Double the size
+ * of the array. 
+ */
+public void resize()
+{
+int newlength1 = 2 * size();
+Package[] old = packages;
+packages = new Package[newlength1];
+for(int i=0; i<old.length; i++)
+{
+if(old[i] !=null)
+{
+packages[i]= old[i];
+}
+}
+}
+
+/**
+ * remove. Remove the Package at position zero and
+ * return it. This will be the package with the
+ * highest remaining priority.
+ *
+ * @return the Package at position 0
+ */
+public Package remove()
+{
+Package removed1 = packages[0];
+count--;
+for(int i=0; i<count; i++)
+{
+Package old= packages[i+1];
+packages[i]=old;
+}
+return removed1;
+}
+
+/**
+ * sort. 
+ */
+public void sort()
+{
+MergeSort(0, count-1);
+
+}
+
+public void assemble(int start1, int middle, int end1)
+{
+Package[] temp= new Package[count];
+System.arraycopy(packages, 0, temp, 0, count);
+int k=start1;
+int j=middle+1;
+int i=start1;
+while(i<=middle && j<= end1)
+{
+if(temp[i].getPriority() >= temp[j].getPriority())
+{
+packages[k]=temp[i];
+i++;
+}
+else
+{
+packages[k]= temp[j];
+j++;
+
+}
+k++;
+}
+while(i<=middle)
+{
+packages[k]=temp[i];
+k++;
+i++;
+}
+
+}
+
+public void MergeSort(int start1, int end1)
+{
+if(start1<end1)
+{
+int middle = start1 + (end1 - start1)/2;
+MergeSort(start1, middle);
+MergeSort(middle +1, end1);
+assemble(start1, middle, end1);
+}
+}
+}
